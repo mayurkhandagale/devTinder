@@ -6,17 +6,22 @@ const { adminAuth, userAuth } = require('./middlewares/auth');
 
 app.use("/admin", adminAuth);
 
-app.use("/admin/getData", (req, res, next) => {
-  res.send("Admin data sent");
-})
-
-app.get("/user/getData", userAuth, (req, res, next) => {
-  res.send('User data sent!');
+app.use("/", (err, req, res, next) => {
+  if (err) {
+    res.status(500).send("Something went wrong");
+  }
 });
 
-app.get("/user/login", (req, res, next) => {
-  res.send("User logged in successfully!!");
-})
+app.get("/getUserData", (req, res) => {
+  throw new Error("aldfkl");
+  res.send("User data sent");
+});
+
+app.use("/", (err, req, res, next) => {
+  if (err) {
+    res.status(500).send("Something went wrong");
+  }
+});
 
 app.listen(5000, () => {
   console.log("Server listening on port 5000...");
