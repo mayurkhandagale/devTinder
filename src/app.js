@@ -2,30 +2,20 @@ const express = require('express');
 
 const app = express();
 
-//this will only handle GET call to /user
-app.get('/user', (req, res, next) => {
-  console.log("Handling the route user!");
-  next();
-},
-  (req, res, next) => {
-    console.log("Handling the route user 2!");
-    //res.send("2nd User");
-    next();
-  },
-  (req, res, next) => {
-    console.log("Handling the route user 3!");
-    res.send("3rd User ");
-  }
-);
+const { adminAuth, userAuth } = require('./middlewares/auth');
 
-app.post('/user', (req, res) => {
-  //logic to add data to DB
-  res.send("POST data successfully");
+app.use("/admin", adminAuth);
+
+app.use("/admin/getData", (req, res, next) => {
+  res.send("Admin data sent");
+})
+
+app.get("/user/getData", userAuth, (req, res, next) => {
+  res.send('User data sent!');
 });
 
-app.get("/user/:id/:name", (req, res) => {
-  console.log(req.params);
-  res.send({ firstName: "Mayur", lastName: "Khandagale" });
+app.get("/user/login", (req, res, next) => {
+  res.send("User logged in successfully!!");
 })
 
 app.listen(5000, () => {
