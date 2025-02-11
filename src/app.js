@@ -4,6 +4,7 @@ const app = express();
 const User = require("./models/user");
 const { validateSignUpData } = require("./utils/validation");
 const bcrypt = require('bcrypt');
+const validator = require("validator");
 
 app.use(express.json());
 
@@ -30,6 +31,29 @@ app.post("/signup", async (req, res) => {
     res.status(400).send("Error saving the user: " + err.message);
   }
 });
+
+app.post("/login", async (req, res) => {
+  try {
+    const { emailId, password } = req.body;
+    if (!validator.isEmail(emailId)) {
+      throw new Error("Invalid email id!");
+    }
+
+    const user = await User.findOne({ emailId: emailId });
+    if (!user) {
+      throw new Error("Invalid credentails");
+    }
+    const isPasswordValid = await bcrypt.compare(password, user.password);
+    if (isPasswordValid) {
+      res.send("Login succesful!");
+    } else {
+      throw new Error("Invalid credentails");
+    }
+
+  } catch (err) {
+    res.status(400).send("ERROR: " + err.message);
+  }
+})
 
 // Get user by email
 app.get("/user", async (req, res) => {
@@ -89,7 +113,6 @@ app.patch("/user/:userId", async (req, res) => {
       throw new Error("Skills can not be more than 10")
     }
     const user = await User.findByIdAndUpdate(userId, data, { returnDocument: "after", runValidators: true });
-    console.log(user);
     res.send("User updated successfully.");
   } catch (err) {
     res.status(404).send("UPDATe FAILED: " + err.message);
