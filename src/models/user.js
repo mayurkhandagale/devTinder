@@ -26,13 +26,10 @@ const userSchema = new mongoose.Schema({
   },
   password: {
     type: String,
-    validate: {
-      validator: function (v) {
-        // Regular expression for password validation
-        const regex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*])[A-Za-z\d!@#$%^&*]{6,}$/;
-        return regex.test(v);
-      },
-      message: 'Password must be at least 6 characters long, contain at least one uppercase letter, one lowercase letter, one number, and one special character.'
+    validator(value) {
+      if (!validator.isStrongPassword(value)) {
+        throw new Error("Please enter a strong password: " + value);
+      }
     },
     required: true
   },
