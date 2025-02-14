@@ -6,7 +6,6 @@ const { validateSignUpData } = require("./utils/validation");
 const bcrypt = require('bcrypt');
 const validator = require("validator");
 const cookieParser = require("cookie-parser");
-const jwt = require("jsonwebtoken");
 const { userAuth } = require("./middlewares/auth");
 
 app.use(express.json());
@@ -47,11 +46,11 @@ app.post("/login", async (req, res) => {
     if (!user) {
       throw new Error("Invalid credentails");
     }
-    const isPasswordValid = await bcrypt.compare(password, user.password);
+    const isPasswordValid = user.validatePassword(password);
     if (isPasswordValid) {
       // Create a JWT Token
-      const token = jwt.sign({ _id: user._id }, "DEV@tinder!123", { expiresIn: "1d" });
-
+      const token = user.getJWT();
+      console.log("toekn" + token);
       // Add the token to cookie and send the response back
       res.cookie("token", token, { expires: new Date(Date.now() + 8 * 3600000) });
       res.send("Login succesful!");
