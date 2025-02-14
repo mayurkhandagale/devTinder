@@ -73,6 +73,12 @@ app.get("/profile", userAuth, async (req, res) => {
   }
 });
 
+app.post("/sendConnectionRequest", userAuth, (req, res) => {
+  // Logic to send the connnection request
+  const user = req.user;
+  res.send(user.firstName + " sent you a connection request!");
+})
+
 connectDB()
   .then(() => {
     console.log("Database connection established..");
