@@ -46,7 +46,7 @@ authRouter.post("/login", async (req, res) => {
       const token = user.getJWT();
       // Add the token to cookie and send the response back
       res.cookie("token", token, { expires: new Date(Date.now() + 8 * 3600000) });
-      res.send("Login succesful!");
+      res.send(user);
     } else {
       throw new Error("Invalid credentails");
     }
