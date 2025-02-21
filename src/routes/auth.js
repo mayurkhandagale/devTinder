@@ -40,7 +40,7 @@ authRouter.post("/login", async (req, res) => {
     if (!user) {
       throw new Error("Invalid credentails");
     }
-    const isPasswordValid = user.validatePassword(password);
+    const isPasswordValid = await user.validatePassword(password);
     if (isPasswordValid) {
       // Create a JWT Token
       const token = user.getJWT();
