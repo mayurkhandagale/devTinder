@@ -71,6 +71,12 @@ const userSchema = new mongoose.Schema({
   },
   skills: {
     type: [String]
+  },
+  resetToken: {
+    type: String
+  },
+  resetTokenExpire: {
+    type: Date
   }
 }, {
   timestamps: true
